@@ -9,8 +9,8 @@ const app = express_1.default();
 const PORT = 5000;
 app.get('/', (req, res) => {
     api_1.fetchPoem().then(poem => {
-        res.json(poem);
-    });
+        res.json(poem[0]);
+    }).catch(err => { throw new Error(err); });
 });
 app.listen(PORT, () => console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`));
 //# sourceMappingURL=index.js.map
