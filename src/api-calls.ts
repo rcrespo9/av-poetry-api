@@ -67,7 +67,9 @@ async function fetchAnalyzedPoemWithImg() {
   
   const photoResponse = await fetchPhoto(poemEmotion);
 
-  return {...thePoem, ...poemAnalysis.result, ...photoResponse};
+  const finalResult = { poem: thePoem, poemAnalysis: poemAnalysis.result, 'poemPhoto': photoResponse };
+
+  return finalResult;
 }
 
 export { fetchAnalyzedPoemWithImg };
