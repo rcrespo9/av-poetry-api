@@ -1,23 +1,22 @@
-import axios, { AxiosResponse } from "axios";
+import fetch from "node-fetch";
 import dotenv from "dotenv";
 import NaturalLanguageUnderstandingV1 from "ibm-watson/natural-language-understanding/v1";
 import { IamAuthenticator } from "ibm-watson/auth";
 
 dotenv.config();
 
-type Poem = {
-  title: string;
-  author: string;
-  lines: string[];
-};
+async function fetchPoem() {
+  try {
+    const response = await fetch("https://poetrydb.org/random");
+    const poem = response.json();
 
-function fetchPoem() {
-  return axios.get<Poem[]>("https://poetrydb.org/random").then((res) => {
-    return res.data;
-  });
+    return poem;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
-function analyzeText(lines: string) {
+async function fetchPoemAnalysis(text: string) {
   const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
     version: "2020-08-01",
     authenticator: new IamAuthenticator({
@@ -27,7 +26,7 @@ function analyzeText(lines: string) {
   });
 
   const analyzeParams = {
-    text: lines,
+    text: text,
     features: {
       keywords: {
         emotion: true,
@@ -36,22 +35,39 @@ function analyzeText(lines: string) {
     },
   };
 
- return naturalLanguageUnderstanding
-    .analyze(analyzeParams)
-    .then((analysisResults: any) => {
-      return analysisResults;
-    })
-    .catch((err: any) => {
-      throw new Error(err);
-    });
+  try {
+    const response = await naturalLanguageUnderstanding.analyze(analyzeParams);
+
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
-function getPhoto(word: string) {
-  return axios.get<AxiosResponse>(
-    `https://api.unsplash.com/photos/random/?query=${word}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`
-  ).then(res => {
-    return res.data;
-  });
+async function fetchPhoto(word: string) {  
+  try {
+    const response = await fetch(
+      `https://api.unsplash.com/photos/random/?query=${word}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+    );
+    const photoResult = response.json();
+
+    return photoResult;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
-export { fetchPoem, analyzeText, getPhoto };
+async function fetchAnalyzedPoemWithImg() {
+  const poemResponse = await fetchPoem();
+  const thePoem = poemResponse[0];
+  const poemText = thePoem.lines.join('\n');
+
+  const poemAnalysis = await fetchPoemAnalysis(poemText);
+  const poemEmotion = poemAnalysis.result.keywords[0].text;
+  
+  const photoResponse = await fetchPhoto(poemEmotion);
+
+  return {...thePoem, ...poemAnalysis.result, ...photoResponse};
+}
+
+export { fetchAnalyzedPoemWithImg };
