@@ -47,7 +47,7 @@ async function fetchPoemAnalysis(text: string) {
 async function fetchPhoto(word: string) {  
   try {
     const response = await fetch(
-      `https://api.unsplash.com/photos/random/?query=${word}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+      `https://api.unsplash.com/photos/random/?query=${word}&orientation=portrait&client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
     const photoResult = response.json();
 
@@ -58,18 +58,22 @@ async function fetchPhoto(word: string) {
 }
 
 async function fetchAnalyzedPoemWithImg() {
-  const poemResponse = await fetchPoem();
-  const thePoem = poemResponse[0];
-  const poemText = thePoem.lines.join('\n');
+  try {
+   const poemResponse = await fetchPoem();
+   const thePoem = poemResponse[0];
+   const poemText = thePoem.lines.join('\n');
 
-  const poemAnalysis = await fetchPoemAnalysis(poemText);
-  const poemEmotion = poemAnalysis.result.keywords[0].text;
-  
-  const photoResponse = await fetchPhoto(poemEmotion);
+   const poemAnalysis = await fetchPoemAnalysis(poemText);
+   const poemEmotion = poemAnalysis.result.keywords[0].text;
 
-  const finalResult = { poem: thePoem, poemAnalysis: poemAnalysis.result, 'poemPhoto': photoResponse };
+   const photoResponse = await fetchPhoto(poemEmotion);
 
-  return finalResult;
+   const finalResult = { poem: thePoem, poemAnalysis: poemAnalysis.result, 'poemPhoto': photoResponse };
+
+   return finalResult; 
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 export { fetchAnalyzedPoemWithImg };
