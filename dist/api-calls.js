@@ -3,19 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.analyzeText = exports.fetchPoem = void 0;
+exports.getPhoto = exports.analyzeText = exports.fetchPoem = void 0;
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const v1_1 = __importDefault(require("ibm-watson/natural-language-understanding/v1"));
 const auth_1 = require("ibm-watson/auth");
 dotenv_1.default.config();
-const naturalLanguageUnderstanding = new v1_1.default({
-    version: "2020-08-01",
-    authenticator: new auth_1.IamAuthenticator({
-        apikey: process.env.IBM_NLP_API_KEY,
-    }),
-    serviceUrl: process.env.IBM_NLP_SERVICE_URL,
-});
 function fetchPoem() {
     return axios_1.default.get("https://poetrydb.org/random").then((res) => {
         return res.data;
@@ -23,6 +16,13 @@ function fetchPoem() {
 }
 exports.fetchPoem = fetchPoem;
 function analyzeText(lines) {
+    const naturalLanguageUnderstanding = new v1_1.default({
+        version: "2020-08-01",
+        authenticator: new auth_1.IamAuthenticator({
+            apikey: process.env.IBM_NLP_API_KEY,
+        }),
+        serviceUrl: process.env.IBM_NLP_SERVICE_URL,
+    });
     const analyzeParams = {
         text: lines,
         features: {
@@ -42,4 +42,10 @@ function analyzeText(lines) {
     });
 }
 exports.analyzeText = analyzeText;
+function getPhoto(word) {
+    return axios_1.default.get(`https://api.unsplash.com/photos/random/?query=${word}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`).then(res => {
+        return res.data;
+    });
+}
+exports.getPhoto = getPhoto;
 //# sourceMappingURL=api-calls.js.map

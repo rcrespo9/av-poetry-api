@@ -12,10 +12,12 @@ app.get('/', (req, res) => {
         const thePoem = poem[0];
         const { title, author, lines } = thePoem;
         const poemText = lines.join('\n');
-        api_calls_1.analyzeText(poemText).then((analysis) => {
-            const finalResult = Object.assign(Object.assign({}, thePoem), analysis.result);
-            res.json(finalResult);
-        });
+        api_calls_1.analyzeText(title).then((analysis) => {
+            api_calls_1.getPhoto(analysis.result.keywords[0].text).then(photo => {
+                const finalResult = Object.assign(Object.assign(Object.assign({}, thePoem), analysis.result), photo);
+                res.json(finalResult);
+            }).catch(err => { throw new Error(err); });
+        }).catch(err => { throw new Error(err); });
     }).catch(err => { throw new Error(err); });
 });
 app.listen(PORT, () => console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`));

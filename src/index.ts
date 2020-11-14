@@ -1,5 +1,5 @@
 import express from 'express';
-import { fetchPoem, analyzeText } from './api-calls';
+import { fetchPoem, analyzeText, getPhoto } from './api-calls';
 
 const app = express();
 const PORT = 5000;
@@ -10,10 +10,12 @@ app.get('/', (req, res) => {
     const { title, author, lines } = thePoem;
     const poemText = lines.join('\n');
 
-    analyzeText(poemText).then((analysis: any) => {
-      const finalResult = { ...thePoem, ...analysis.result }
-      res.json(finalResult);
-    });
+    analyzeText(title).then((analysis: any) => {
+      getPhoto(analysis.result.keywords[0].text).then(photo => {
+        const finalResult = { ...thePoem, ...analysis.result, ...photo };
+        res.json(finalResult);
+      }).catch(err => {throw new Error(err)})
+    }).catch(err => {throw new Error(err)});
   }).catch(err => {throw new Error(err)})
 });
 
