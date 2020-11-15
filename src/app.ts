@@ -12,9 +12,10 @@ app.get("/api", async (req, res) => {
     .then((response) => {
       res.json(response);
     })
-    .catch((err) => {
-      throw new Error(err);
-    });
+  
+  fetchAnalyzedPoemWithImg().catch((err) => {
+    throw new Error(err);
+  });
 });
 
 export { app };

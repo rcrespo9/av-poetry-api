@@ -18,24 +18,8 @@ it('Gets the API endpoint with correct response', async done => {
   expect(poemWithPhoto).toBeDefined();
 
   expect(poemWithPhoto.body).toHaveProperty("poem");
-  expect(poemWithPhoto.body.poem).toHaveProperty("title");
-  expect(poemWithPhoto.body.poem).toHaveProperty("author");
-  expect(poemWithPhoto.body.poem).toHaveProperty("lines");
-  expect(poemWithPhoto.body.poem).toHaveProperty("linecount");
-
   expect(poemWithPhoto.body).toHaveProperty("poem_analysis");
-  expect(poemWithPhoto.body.poem_analysis).toHaveProperty("keyword");
-  expect(poemWithPhoto.body.poem_analysis).toHaveProperty("emotion");
-
   expect(poemWithPhoto.body).toHaveProperty("poem_photo");
-  expect(poemWithPhoto.body.poem_photo).toHaveProperty("description");
-  expect(poemWithPhoto.body.poem_photo).toHaveProperty("alt_description");
-  expect(poemWithPhoto.body.poem_photo).toHaveProperty("urls");
-  expect(poemWithPhoto.body.poem_photo.urls).toHaveProperty("raw");
-  expect(poemWithPhoto.body.poem_photo.urls).toHaveProperty("full");
-  expect(poemWithPhoto.body.poem_photo.urls).toHaveProperty("regular");
-  expect(poemWithPhoto.body.poem_photo.urls).toHaveProperty("small");
-  expect(poemWithPhoto.body.poem_photo.urls).toHaveProperty("thumb");
   done();
 });
 
