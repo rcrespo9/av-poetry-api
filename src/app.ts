@@ -3,15 +3,11 @@ import { fetchAnalyzedPoemWithImg } from "./api-calls";
 
 const app = express();
 
-app.get("/", async (req, res) => {
-  res.send("Welcome to the Voems API!");
-});
+app.get("/", (req, res) => res.send("Welcome to the Voems API!"));
 
-app.get("/api", async (req, res) => {
+app.get("/api", (req, res) => {
   fetchAnalyzedPoemWithImg()
-    .then((response) => {
-      res.json(response);
-    })
+    .then(poemWithImg => res.json(poemWithImg))
     .catch(error => res.status(500).json({error: error.message}));
 });
 
