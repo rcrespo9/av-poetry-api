@@ -3,7 +3,7 @@ import { fetchAnalyzedPoemWithImg } from "./api-calls";
 
 const app = express();
 
-app.get("/", (req, res) => res.send("Welcome to the Voems API!"));
+app.get("/", (req, res) => res.send("Welcome to the Poetry Immotion API!"));
 
 app.get("/api", (req, res) => {
   fetchAnalyzedPoemWithImg()
